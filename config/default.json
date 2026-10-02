@@ -1,0 +1,9 @@
+{
+    "rate_bps": 10000000,
+    "bucket_capacity_bytes": 20971520,
+    "queue_capacity_packets": 1000,
+    "mode": "shaping",
+    "interface": "netbucket0",
+    "log_level": "info",
+    "stats_interval_ms": 1000
+}

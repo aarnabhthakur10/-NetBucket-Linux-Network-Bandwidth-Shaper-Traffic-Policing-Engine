@@ -1,0 +1,48 @@
+# ─── Build directories ────────────────────────────────────────────────────────
+build/
+cmake-build-*/
+out/
+.cache/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.cmake
+
+# ─── Compiled output ──────────────────────────────────────────────────────────
+*.o
+*.a
+*.so
+*.out
+*.elf
+netbucket
+
+# ─── Dependency fetches (FetchContent) ───────────────────────────────────────
+_deps/
+
+# ─── IDE / editor ────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.user
+*.suo
+*.sln.DotSettings
+.clangd/
+compile_commands.json
+
+# ─── OS ──────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── Logs ────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ─── Test artifacts ──────────────────────────────────────────────────────────
+Testing/
+CTestTestfile.cmake
+
+# ─── Dashboard build artifacts ───────────────────────────────────────────────
+dashboard/node_modules/
+dashboard/dist/
+dashboard/.next/
