@@ -4,10 +4,7 @@
 > Wipro Capstone Project — Systems Programming in C++20 on Linux
 
 ---
-Rahul betichod mardarchod
-rahul ka lawda nhi hai
-rahul bahut jyada kaala hai
-rahul ka cock apne khudke muh me hai
+
 
 ## What is NetBucket?
 
