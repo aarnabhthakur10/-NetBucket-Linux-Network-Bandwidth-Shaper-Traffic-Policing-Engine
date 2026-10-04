@@ -6,7 +6,7 @@
 
 namespace netbucket {
 
-// ─── Rule factories ───────────────────────────────────────────────────────────
+// Rule factories 
 
 ClassificationRule ClassificationRule::by_dst_port(
     std::string name, uint16_t port, FlowId flow_id, int priority)
@@ -32,7 +32,7 @@ ClassificationRule ClassificationRule::by_protocol(
     return r;
 }
 
-// ─── Rule management ──────────────────────────────────────────────────────────
+// Rule management
 
 void TrafficClassifier::add_rule(ClassificationRule rule) {
     rules_.push_back(std::move(rule));
@@ -51,7 +51,7 @@ void TrafficClassifier::remove_rule(const std::string& name) {
     );
 }
 
-// ─── Classification ───────────────────────────────────────────────────────────
+// Classification 
 
 bool TrafficClassifier::matches(const ClassificationRule& rule, const Packet& pkt) const {
     switch (rule.field) {
