@@ -8,7 +8,7 @@
 // PacketWriter:  receives forwarded Packet objects and writes them back
 //                to a second TUN fd (the "output" side of the shaper).
 //
-// ─── Architecture with two TUN devices ───────────────────────────────────────
+// Architecture with two TUN devices 
 //
 //   Client netns          Shaper process          Server netns
 //       │                      │                       │
@@ -31,7 +31,7 @@
 
 namespace netbucket {
 
-// ─── PacketReader ─────────────────────────────────────────────────────────────
+//  PacketReader 
 
 class PacketReader {
 public:
@@ -53,7 +53,7 @@ private:
     std::thread         thread_;
 };
 
-// ─── PacketWriter ─────────────────────────────────────────────────────────────
+//  PacketWriter 
 
 /// PacketWriter is used as the ForwardFn injected into TrafficController.
 /// It writes forwarded packets to the output TUN device.
