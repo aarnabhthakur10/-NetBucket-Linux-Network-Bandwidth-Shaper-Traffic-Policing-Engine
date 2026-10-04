@@ -1,4 +1,4 @@
-# ─── Build directories ────────────────────────────────────────────────────────
+#  Build directories 
 build/
 cmake-build-*/
 out/
@@ -9,7 +9,7 @@ cmake_install.cmake
 Makefile
 *.cmake
 
-# ─── Compiled output ──────────────────────────────────────────────────────────
+#  Compiled output 
 *.o
 *.a
 *.so
@@ -17,10 +17,10 @@ Makefile
 *.elf
 netbucket
 
-# ─── Dependency fetches (FetchContent) ───────────────────────────────────────
+#  Dependency fetches (FetchContent) 
 _deps/
 
-# ─── IDE / editor ────────────────────────────────────────────────────────────
+#  IDE / editor 
 .vscode/
 .idea/
 *.user
@@ -29,16 +29,16 @@ _deps/
 .clangd/
 compile_commands.json
 
-# ─── OS ──────────────────────────────────────────────────────────────────────
+#  OS 
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# ─── Logs ────────────────────────────────────────────────────────────────────
+# Logs 
 *.log
 logs/
 
-# ─── Test artifacts ──────────────────────────────────────────────────────────
+# Test artifacts 
 Testing/
 CTestTestfile.cmake
 
