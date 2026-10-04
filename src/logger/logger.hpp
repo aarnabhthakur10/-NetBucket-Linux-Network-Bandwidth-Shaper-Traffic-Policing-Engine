@@ -56,7 +56,7 @@ private:
     std::ostream*      out_       = nullptr;   // set lazily to avoid static-init order issues
 };
 
-// ─── Convenience macros ───────────────────────────────────────────────────────
+//  Convenience macros 
 
 #define NB_LOG_DEBUG(comp, msg)   ::netbucket::Logger::instance().debug(comp, msg)
 #define NB_LOG_INFO(comp, msg)    ::netbucket::Logger::instance().info(comp, msg)
