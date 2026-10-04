@@ -2,14 +2,14 @@
 //
 // NetBucket — Configuration Manager
 //
-// ─── Responsibilities ────────────────────────────────────────────────────────
+// Responsibilities 
 //
 // 1. Parse and validate JSON configuration files
 // 2. Provide a thread-safe configuration store
 // 3. Expose typed accessors for all parameters
 // 4. Apply live updates (rate, capacity, mode, queue size)
 //
-// ─── Why std::shared_mutex? ──────────────────────────────────────────────────
+// Why std::shared_mutex? 
 //
 // Configuration is read on every packet (to check mode: shaping/policing).
 // Configuration is written rarely (operator CLI command or REST call).
@@ -53,7 +53,7 @@ class ConfigManager {
 public:
     ConfigManager() = default;
 
-    // ── Load / save ───────────────────────────────────────────────────────────
+    // Load / save 
 
     /// Load and validate from a JSON file.
     /// @throws std::runtime_error on file I/O or validation failure.
@@ -62,11 +62,11 @@ public:
     /// Save current configuration to JSON file.
     void save(const std::string& path) const;
 
-    // ── Thread-safe accessors ─────────────────────────────────────────────────
+    //  Thread-safe accessors 
 
     [[nodiscard]] Config get() const;
 
-    // ── Live update setters (validated) ───────────────────────────────────────
+    //  Live update setters (validated) 
 
     /// @throws std::invalid_argument if rate_bps <= 0
     void set_rate(double rate_bps);
