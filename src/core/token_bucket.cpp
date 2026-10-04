@@ -10,7 +10,7 @@
 
 namespace netbucket {
 
-// ─── Validation helper ────────────────────────────────────────────────────────
+//  Validation helper 
 
 static void validate_rate(double rate_bps) {
     if (rate_bps <= 0.0) {
@@ -29,7 +29,7 @@ static void validate_capacity(double capacity_bytes) {
     }
 }
 
-// ─── Construction ─────────────────────────────────────────────────────────────
+// Construction 
 
 TokenBucket::TokenBucket(double rate_bps, double capacity_bytes)
     : rate_bps_{0.0}        // set properly after validation below
@@ -82,7 +82,7 @@ TokenBucket& TokenBucket::operator=(TokenBucket&& other) noexcept {
     return *this;
 }
 
-// ─── Core operation ───────────────────────────────────────────────────────────
+// Core operation 
 
 bool TokenBucket::consume(double bytes) {
     std::lock_guard lock{mutex_};
@@ -96,7 +96,7 @@ bool TokenBucket::consume(double bytes) {
     return false;      // Packet must be queued (shaping) or dropped (policing)
 }
 
-// ─── Inspection ───────────────────────────────────────────────────────────────
+//  Inspection 
 
 double TokenBucket::tokens() const {
     std::lock_guard lock{mutex_};
@@ -118,7 +118,7 @@ double TokenBucket::capacity_bytes() const {
     return capacity_bytes_;
 }
 
-// ─── Live configuration ───────────────────────────────────────────────────────
+// Live configuration 
 
 void TokenBucket::set_rate(double rate_bps) {
     validate_rate(rate_bps);
@@ -148,7 +148,7 @@ void TokenBucket::set_capacity(double capacity_bytes) {
     tokens_ = std::min(tokens_, capacity_bytes_);
 }
 
-// ─── Status ───────────────────────────────────────────────────────────────────
+//  Status 
 
 std::string TokenBucket::status() const {
     std::lock_guard lock{mutex_};
@@ -161,7 +161,7 @@ std::string TokenBucket::status() const {
     return oss.str();
 }
 
-// ─── Internal: lazy refill ────────────────────────────────────────────────────
+// Internal: lazy refill 
 
 // MUST be called with mutex_ held.
 void TokenBucket::refill_locked() {
