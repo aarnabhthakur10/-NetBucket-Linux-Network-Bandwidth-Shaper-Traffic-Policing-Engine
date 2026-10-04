@@ -39,7 +39,7 @@ echo "  Duration:     ${DURATION} seconds"
 echo "══════════════════════════════════════════════════════════"
 echo ""
 
-# ─── Start iperf3 server in the server namespace ──────────────────────────────
+#  Start iperf3 server in the server namespace 
 echo "[test] Starting iperf3 server in namespace ${NS_SERVER}..."
 ip netns exec "$NS_SERVER" iperf3 --server --port "$IPERF_PORT" --daemon \
     --logfile /tmp/netbucket_iperf3_server.log
@@ -47,7 +47,7 @@ ip netns exec "$NS_SERVER" iperf3 --server --port "$IPERF_PORT" --daemon \
 echo "[test] iperf3 server started. Waiting 1 second..."
 sleep 1
 
-# ─── Run iperf3 client in the client namespace ────────────────────────────────
+# Run iperf3 client in the client namespace 
 echo "[test] Running iperf3 client: ${GENERATE_MBPS} Mbps for ${DURATION}s..."
 echo ""
 
