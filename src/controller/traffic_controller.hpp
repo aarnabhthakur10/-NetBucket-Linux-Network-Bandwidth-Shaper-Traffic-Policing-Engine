@@ -2,7 +2,7 @@
 //
 // NetBucket — Traffic Controller
 //
-// ─── What is this? ────────────────────────────────────────────────────────────
+// What is this? 
 //
 // TrafficController is the brain of the system. It is the single component
 // that all packets pass through.
@@ -16,7 +16,7 @@
 //   6. If denied and POLICING → count as dropped
 //   7. Update statistics
 //
-// ─── Why a forward callback? ─────────────────────────────────────────────────
+// Why a forward callback? 
 //
 // The TrafficController knows HOW to make a shaping/policing decision,
 // but it should NOT know WHERE to forward the packet (TUN write? loopback?
@@ -26,7 +26,7 @@
 // std::function<void(Packet)>. This follows the Dependency Inversion
 // principle and makes the controller fully unit-testable without a TUN device.
 //
-// ─── Live configuration ───────────────────────────────────────────────────────
+//  Live configuration 
 //
 // The Scheduler calls apply_config() whenever the ConfigManager detects a change.
 // apply_config() updates the token bucket and queue without dropping state.
@@ -61,24 +61,24 @@ public:
     TrafficController(const TrafficController&)            = delete;
     TrafficController& operator=(const TrafficController&) = delete;
 
-    // ── Core operation ────────────────────────────────────────────────────────
+    // Core operation 
 
     /// Submit a packet for processing (called from packet ingestion thread).
     ///
     /// Thread-safe. Returns immediately — packet is either forwarded or queued.
     void process(Packet packet);
 
-    // ── Configuration ─────────────────────────────────────────────────────────
+    //  Configuration 
 
     /// Apply new configuration live (called from CLI/Config thread).
     void apply_config(const Config& cfg);
 
-    // ── Lifecycle ─────────────────────────────────────────────────────────────
+    // Lifecycle 
 
     void start();   ///< Start the scheduler background thread
     void stop();    ///< Signal stop and join all threads
 
-    // ── Inspection ────────────────────────────────────────────────────────────
+    // Inspection 
 
     [[nodiscard]] const StatisticsEngine& stats()     const { return stats_; }
     [[nodiscard]] TrafficMode             mode()       const;
@@ -87,7 +87,7 @@ public:
     [[nodiscard]] double                  rate_bps()    const;
 
 private:
-    // ── Scheduler thread ──────────────────────────────────────────────────────
+    // Scheduler thread 
 
     /// Background thread that drains the packet queue when tokens are available.
     ///
@@ -98,7 +98,7 @@ private:
     ///   4. If not enough   → sleep until tokens for front packet would be ready
     void scheduler_loop();
 
-    // ── Data members ──────────────────────────────────────────────────────────
+    // Data members 
 
     ForwardFn           forward_fn_;
     TokenBucket         bucket_;
