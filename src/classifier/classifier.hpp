@@ -2,7 +2,7 @@
 //
 // NetBucket — Traffic Classifier
 //
-// ─── What is traffic classification? ────────────────────────────────────────
+//  What is traffic classification? 
 //
 // Instead of applying a single rate limit to ALL traffic, classification
 // splits traffic into named FLOWS, each of which can have its own policy.
@@ -12,14 +12,14 @@
 //   Video (port 554)    → Flow 2 → 20 Mbps bucket
 //   Bulk  (everything)  → Flow 0 (default) → 2 Mbps bucket
 //
-// ─── How it works ────────────────────────────────────────────────────────────
+//  How it works 
 //
 // A ClassificationRule defines a match condition and assigns a FlowId.
 // Rules are evaluated in priority order.
 // The first matching rule wins.
 // If no rule matches, the packet gets DEFAULT_FLOW_ID (0).
 //
-// ─── Current match conditions ────────────────────────────────────────────────
+//  Current match conditions 
 //
 // Phase 10 supports:
 //   - destination port (most common, simplest to implement)
@@ -43,7 +43,7 @@
 
 namespace netbucket {
 
-// ─── MatchCondition ───────────────────────────────────────────────────────────
+//  MatchCondition 
 
 enum class MatchField {
     DST_PORT,    ///< Match on TCP/UDP destination port
@@ -54,11 +54,11 @@ enum class MatchField {
 };
 
 struct ClassificationRule {
-    std::string  name;       ///< Human-readable name ("http", "video", etc.)
-    MatchField   field;      ///< Which header field to match
-    uint32_t     value;      ///< Value to match (port number, IP, or protocol)
-    FlowId       flow_id;    ///< Assigned flow ID when rule matches
-    int          priority;   ///< Lower number = evaluated first
+    std::string  name;       /// Human-readable name ("http", "video", etc.)
+    MatchField   field;      /// Which header field to match
+    uint32_t     value;      /// Value to match (port number, IP, or protocol)
+    FlowId       flow_id;    /// Assigned flow ID when rule matches
+    int          priority;   /// Lower number = evaluated first
 
     /// Construct a port-based rule (most common)
     static ClassificationRule by_dst_port(
@@ -68,7 +68,7 @@ struct ClassificationRule {
         std::string name, uint8_t protocol, FlowId flow_id, int priority = 200);
 };
 
-// ─── TrafficClassifier ───────────────────────────────────────────────────────
+//  TrafficClassifier 
 
 class TrafficClassifier {
 public:
