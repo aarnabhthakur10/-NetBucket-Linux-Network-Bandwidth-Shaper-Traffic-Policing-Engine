@@ -1,6 +1,6 @@
-# ─── NetBucket source CMakeLists ──────────────────────────────────────────────
+#  NetBucket source CMakeLists 
 
-# ─── Core library ────────────────────────────────────────────────────────────
+#  Core library 
 add_library(netbucket_core STATIC
     # Phase 1: TokenBucket
     core/token_bucket.cpp
@@ -40,12 +40,12 @@ target_link_libraries(netbucket_core PUBLIC
 find_package(Threads REQUIRED)
 target_link_libraries(netbucket_core PUBLIC Threads::Threads)
 
-# ─── Main executable ─────────────────────────────────────────────────────────
+# Main executable 
 add_executable(netbucket main.cpp)
 
 target_link_libraries(netbucket PRIVATE
     netbucket_core
 )
 
-# ─── Install ──────────────────────────────────────────────────────────────────
+# Install 
 install(TARGETS netbucket DESTINATION bin)
