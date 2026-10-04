@@ -9,7 +9,7 @@ namespace netbucket {
 // Static counter initialised to 0; incremented atomically per factory call.
 uint64_t Packet::next_id_ = 0;
 
-// ─── Factory: synthetic ───────────────────────────────────────────────────────
+// Factory: synthetic 
 
 Packet Packet::make_synthetic(std::size_t size_bytes) {
     Packet p;
@@ -20,7 +20,7 @@ Packet Packet::make_synthetic(std::size_t size_bytes) {
     return p;
 }
 
-// ─── Factory: from real TUN bytes ─────────────────────────────────────────────
+// Factory: from real TUN bytes 
 //
 // An IP packet arriving from the TUN device starts with the IP header.
 // IPv4 header structure (RFC 791):
@@ -82,7 +82,7 @@ Packet Packet::from_bytes(std::vector<uint8_t> raw) {
     return p;
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// Helpers 
 
 std::chrono::nanoseconds Packet::queue_wait_time() const {
     // If enqueued_at was never set (zero TimePoint), return zero duration.
