@@ -2,7 +2,7 @@
 //
 // NetBucket — FIFO Packet Queue
 //
-// ─── What is this? ────────────────────────────────────────────────────────────
+// What is this? 
 //
 // PacketQueue is the holding area for packets that cannot currently be
 // forwarded because the token bucket is empty.
@@ -10,7 +10,7 @@
 // This only applies in SHAPING mode. In POLICING mode, a packet is dropped
 // immediately when tokens are insufficient — the queue is never used.
 //
-// ─── FIFO — why? ──────────────────────────────────────────────────────────────
+// FIFO — why? 
 //
 // First-In, First-Out is the simplest correct approach. It:
 //   - Preserves packet order (important for TCP)
@@ -20,7 +20,7 @@
 // Later phases can add priority queuing (packets from different classes get
 // different queues), but FIFO is the correct foundation.
 //
-// ─── Capacity ─────────────────────────────────────────────────────────────────
+// Capacity 
 //
 // The queue has a hard maximum depth (in packets).
 // When the queue is full, new packets are TAIL-DROPPED (the newest packet
@@ -30,7 +30,7 @@
 // system memory. The cap bounds memory usage and forces the shaper to
 // keep up with the inflow or admit that it is falling behind.
 //
-// ─── Thread Safety ────────────────────────────────────────────────────────────
+// Thread Safety 
 //
 // All methods are protected by a std::mutex.
 //
@@ -54,7 +54,7 @@
 
 namespace netbucket {
 
-// ─── QueueStats ───────────────────────────────────────────────────────────────
+//  QueueStats 
 
 struct QueueStats {
     uint64_t enqueued         = 0;   ///< Total packets ever enqueued
@@ -69,7 +69,7 @@ struct QueueStats {
     uint64_t max_wait_ns      = 0;   ///< Maximum single packet wait time
 };
 
-// ─── PacketQueue ──────────────────────────────────────────────────────────────
+// PacketQueue 
 
 class PacketQueue {
 public:
@@ -80,7 +80,7 @@ public:
     PacketQueue(const PacketQueue&)            = delete;
     PacketQueue& operator=(const PacketQueue&) = delete;
 
-    // ── Operations ────────────────────────────────────────────────────────────
+    // Operations 
 
     /// Enqueue a packet (thread-safe).
     ///
@@ -106,7 +106,7 @@ public:
     bool wait_for_packet(std::chrono::milliseconds timeout =
                          std::chrono::milliseconds{100});
 
-    // ── Inspection ────────────────────────────────────────────────────────────
+    // Inspection 
 
     [[nodiscard]] bool        empty()    const;
     [[nodiscard]] std::size_t size()     const;
@@ -115,11 +115,11 @@ public:
     /// Snapshot of queue statistics (copy for thread safety)
     [[nodiscard]] QueueStats stats() const;
 
-    // ── Configuration ─────────────────────────────────────────────────────────
+    // Configuration 
 
     void set_capacity(std::size_t capacity);
 
-    // ── Shutdown ──────────────────────────────────────────────────────────────
+    // Shutdown 
 
     /// Signal the scheduler thread to stop waiting.
     /// Called during graceful shutdown.
