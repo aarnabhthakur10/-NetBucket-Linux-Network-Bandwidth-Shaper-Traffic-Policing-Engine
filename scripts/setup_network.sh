@@ -33,7 +33,7 @@
 
 set -euo pipefail
 
-# ─── Configuration ────────────────────────────────────────────────────────────
+# Configuration 
 NS_CLIENT="netbucket-client"
 NS_SERVER="netbucket-server"
 VETH_CLIENT="veth-client"
@@ -44,33 +44,33 @@ PREFIX="24"
 
 echo "[netbucket] Setting up virtual network..."
 
-# ─── Create network namespaces ────────────────────────────────────────────────
+#  Create network namespaces 
 echo "[netbucket] Creating network namespaces: $NS_CLIENT, $NS_SERVER"
 ip netns add "$NS_CLIENT"
 ip netns add "$NS_SERVER"
 
-# ─── Create veth pair ─────────────────────────────────────────────────────────
+#  Create veth pair 
 echo "[netbucket] Creating veth pair: $VETH_CLIENT <-> $VETH_SERVER"
 ip link add "$VETH_CLIENT" type veth peer name "$VETH_SERVER"
 
-# ─── Assign interfaces to namespaces ─────────────────────────────────────────
+#  Assign interfaces to namespaces 
 echo "[netbucket] Assigning interfaces to namespaces"
 ip link set "$VETH_CLIENT" netns "$NS_CLIENT"
 ip link set "$VETH_SERVER" netns "$NS_SERVER"
 
-# ─── Configure IP addresses ───────────────────────────────────────────────────
+#  Configure IP addresses 
 echo "[netbucket] Configuring IP addresses"
 ip netns exec "$NS_CLIENT" ip addr add "${IP_CLIENT}/${PREFIX}" dev "$VETH_CLIENT"
 ip netns exec "$NS_SERVER" ip addr add "${IP_SERVER}/${PREFIX}" dev "$VETH_SERVER"
 
-# ─── Bring interfaces up ──────────────────────────────────────────────────────
+# Bring interfaces up 
 echo "[netbucket] Bringing interfaces up"
 ip netns exec "$NS_CLIENT" ip link set "$VETH_CLIENT" up
 ip netns exec "$NS_CLIENT" ip link set lo up
 ip netns exec "$NS_SERVER" ip link set "$VETH_SERVER" up
 ip netns exec "$NS_SERVER" ip link set lo up
 
-# ─── Verify ───────────────────────────────────────────────────────────────────
+#  Verify 
 echo "[netbucket] Verifying connectivity..."
 if ip netns exec "$NS_CLIENT" ping -c 1 -W 2 "$IP_SERVER" &>/dev/null; then
     echo "[netbucket] ✓ Connectivity verified: $IP_CLIENT -> $IP_SERVER"
