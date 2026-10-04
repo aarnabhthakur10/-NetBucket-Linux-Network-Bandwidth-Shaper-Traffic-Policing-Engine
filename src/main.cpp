@@ -2,7 +2,7 @@
 //
 // NetBucket — Daemon Entry Point
 //
-// ─── Lifecycle ────────────────────────────────────────────────────────────────
+//  Lifecycle 
 //
 //   1. Parse CLI arguments
 //   2. Load configuration
@@ -12,7 +12,7 @@
 //   6. Wait for SIGINT or SIGTERM
 //   7. Graceful shutdown: stop reader → stop controller → close TUN
 //
-// ─── Signal handling ──────────────────────────────────────────────────────────
+//  Signal handling 
 //
 // SIGINT  (Ctrl+C) and SIGTERM (kill / systemd) both trigger graceful shutdown.
 //
@@ -64,14 +64,14 @@ void install_signals() {
 
 } // anonymous namespace
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
+// Main 
 
 int main(int argc, char* argv[]) {
     install_signals();
 
     netbucket::ConfigManager config_mgr;
 
-    // ── CLI-only mode (no daemon) ─────────────────────────────────────────────
+    //  CLI-only mode (no daemon) 
     // If the first argument is a CLI command (not "daemon"), run CLI and exit.
     // This allows:
     //   ./netbucket status
@@ -93,7 +93,7 @@ int main(int argc, char* argv[]) {
         return cli.run(argc, argv);
     }
 
-    // ── Daemon mode ────────────────────────────────────────────────────────────
+    // Daemon mode 
 
     NB_LOG_INFO("main", "NetBucket v0.1.0 starting");
 
@@ -112,7 +112,7 @@ int main(int argc, char* argv[]) {
 
     const netbucket::Config cfg = config_mgr.get();
 
-    // ── Open TUN device ───────────────────────────────────────────────────────
+    //  Open TUN device 
     netbucket::TunDevice tun_in{cfg.interface};
     netbucket::TunDevice tun_out{"netbucket_out"};
 
@@ -127,7 +127,7 @@ int main(int argc, char* argv[]) {
         NB_LOG_WARN("main", "Running in simulation mode (no real traffic processing)");
     }
 
-    // ── Build the traffic engine ──────────────────────────────────────────────
+    // Build the traffic engine 
 
     // Forward function: writes allowed packets to the output TUN
     netbucket::ForwardFn forward_fn;
@@ -144,14 +144,14 @@ int main(int argc, char* argv[]) {
     netbucket::TrafficController controller{cfg, std::move(forward_fn)};
     controller.start();
 
-    // ── Start packet reader ───────────────────────────────────────────────────
+    //  Start packet reader 
     std::unique_ptr<netbucket::PacketReader> reader;
     if (tun_ok) {
         reader = std::make_unique<netbucket::PacketReader>(tun_in, controller);
         reader->start();
     }
 
-    // ── Status print thread ───────────────────────────────────────────────────
+    // Status print thread 
     std::thread stats_thread{[&]() {
         while (!shutdown_requested.load(std::memory_order_relaxed)) {
             std::this_thread::sleep_for(
@@ -177,12 +177,12 @@ int main(int argc, char* argv[]) {
         " Cap=" + std::to_string(cfg.bucket_capacity_bytes / 1048576.0) + " MB" +
         " Mode=" + netbucket::ConfigManager::mode_to_string(cfg.mode));
 
-    // ── Wait for shutdown signal ──────────────────────────────────────────────
+    // Wait for shutdown signal 
     while (!shutdown_requested.load(std::memory_order_relaxed)) {
         std::this_thread::sleep_for(std::chrono::milliseconds{100});
     }
 
-    // ── Graceful shutdown sequence ────────────────────────────────────────────
+    //  Graceful shutdown sequence 
     NB_LOG_INFO("main", "Shutdown requested — stopping gracefully");
 
     if (reader) reader->stop();
