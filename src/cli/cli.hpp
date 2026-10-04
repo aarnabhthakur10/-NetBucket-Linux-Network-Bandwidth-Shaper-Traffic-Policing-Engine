@@ -51,7 +51,7 @@ public:
     /// Parse and execute a command from a vector of strings (for testing).
     int run(const std::vector<std::string>& args);
 
-    // ── Utility: parse human-readable values ─────────────────────────────────
+    //  Utility: parse human-readable values 
 
     /// Parse "10Mbps", "1Gbps", "500Kbps", "1000000" → bits/second
     static double parse_rate(const std::string& s);
