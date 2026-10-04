@@ -20,7 +20,7 @@ NS_SERVER="netbucket-server"
 
 echo "[netbucket] Cleaning up virtual network..."
 
-# ─── Remove namespaces ────────────────────────────────────────────────────────
+# Remove namespaces 
 # Deleting a namespace automatically removes all veth interfaces inside it.
 
 if ip netns list | grep -q "$NS_CLIENT"; then
