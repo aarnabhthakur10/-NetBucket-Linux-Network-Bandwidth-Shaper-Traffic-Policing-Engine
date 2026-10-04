@@ -27,7 +27,7 @@
 
 namespace netbucket {
 
-// ─── Construction ─────────────────────────────────────────────────────────────
+//  Construction 
 
 TunDevice::TunDevice(const std::string& name)
     : name_{name}, fd_{-1}
@@ -53,7 +53,7 @@ TunDevice& TunDevice::operator=(TunDevice&& other) noexcept {
     return *this;
 }
 
-// ─── Open ─────────────────────────────────────────────────────────────────────
+//  Open 
 
 void TunDevice::open() {
     // Step 1: Open the TUN/TAP clone device
@@ -94,7 +94,7 @@ void TunDevice::open() {
     NB_LOG_INFO("TunDevice", "Created TUN interface: " + name_);
 }
 
-// ─── Close ────────────────────────────────────────────────────────────────────
+//  Close 
 
 void TunDevice::close() {
     if (fd_ >= 0) {
@@ -104,7 +104,7 @@ void TunDevice::close() {
     }
 }
 
-// ─── Read ─────────────────────────────────────────────────────────────────────
+// Read 
 
 std::vector<uint8_t> TunDevice::read_packet(std::size_t max_bytes) {
     std::vector<uint8_t> buf(max_bytes);
@@ -121,7 +121,7 @@ std::vector<uint8_t> TunDevice::read_packet(std::size_t max_bytes) {
     return buf;
 }
 
-// ─── Write ────────────────────────────────────────────────────────────────────
+//  Write 
 
 bool TunDevice::write_packet(const std::vector<uint8_t>& data) {
     return write_packet(data.data(), data.size());
@@ -139,7 +139,7 @@ bool TunDevice::write_packet(const uint8_t* data, std::size_t len) {
 } // namespace netbucket
 
 #else
-// ─── Non-Linux stub ───────────────────────────────────────────────────────────
+//  Non-Linux stub 
 // TUN/TAP is Linux-specific. On other platforms, all methods throw.
 
 #include <stdexcept>
