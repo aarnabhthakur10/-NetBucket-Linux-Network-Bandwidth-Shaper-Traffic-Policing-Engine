@@ -160,7 +160,3 @@ rate much more strictly from the start.
 | 18–22 | Optional kernel module, benchmarks, docs, demo |
 
 ---
-
-## License
-
-MIT License — see [LICENSE](LICENSE)
