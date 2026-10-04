@@ -5,13 +5,13 @@
 
 namespace netbucket {
 
-// ─── Construction ─────────────────────────────────────────────────────────────
+// Construction 
 
 PacketQueue::PacketQueue(std::size_t capacity)
     : capacity_{capacity == 0 ? 1 : capacity}
 {}
 
-// ─── push ─────────────────────────────────────────────────────────────────────
+// push 
 
 bool PacketQueue::push(Packet packet) {
     std::lock_guard lock{mutex_};
@@ -40,7 +40,7 @@ bool PacketQueue::push(Packet packet) {
     return true;
 }
 
-// ─── pop ──────────────────────────────────────────────────────────────────────
+// pop 
 
 std::optional<Packet> PacketQueue::pop() {
     std::lock_guard lock{mutex_};
@@ -65,7 +65,7 @@ std::optional<Packet> PacketQueue::pop() {
     return p;
 }
 
-// ─── wait_for_packet ──────────────────────────────────────────────────────────
+// wait_for_packet 
 
 bool PacketQueue::wait_for_packet(std::chrono::milliseconds timeout) {
     std::unique_lock lock{mutex_};
@@ -75,7 +75,7 @@ bool PacketQueue::wait_for_packet(std::chrono::milliseconds timeout) {
     return !queue_.empty();
 }
 
-// ─── Inspection ───────────────────────────────────────────────────────────────
+// Inspection 
 
 bool PacketQueue::empty() const {
     std::lock_guard lock{mutex_};
@@ -92,14 +92,14 @@ QueueStats PacketQueue::stats() const {
     return stats_;   // Copy — safe to return by value
 }
 
-// ─── Configuration ────────────────────────────────────────────────────────────
+// Configuration 
 
 void PacketQueue::set_capacity(std::size_t capacity) {
     std::lock_guard lock{mutex_};
     capacity_ = (capacity == 0) ? 1 : capacity;
 }
 
-// ─── Shutdown ─────────────────────────────────────────────────────────────────
+// Shutdown 
 
 void PacketQueue::shutdown() {
     {
