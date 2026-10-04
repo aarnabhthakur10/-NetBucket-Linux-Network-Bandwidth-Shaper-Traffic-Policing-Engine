@@ -7,7 +7,7 @@
 
 namespace netbucket {
 
-// ─── Validation ───────────────────────────────────────────────────────────────
+//  Validation 
 
 void ConfigManager::validate(const Config& c) {
     if (c.rate_bps <= 0.0)
@@ -22,7 +22,7 @@ void ConfigManager::validate(const Config& c) {
         throw std::invalid_argument("queue_capacity_packets > 100,000 is unreasonably large");
 }
 
-// ─── Load ─────────────────────────────────────────────────────────────────────
+// Load 
 
 void ConfigManager::load(const std::string& path) {
     std::ifstream file(path);
@@ -67,7 +67,7 @@ void ConfigManager::load(const std::string& path) {
     config_ = c;
 }
 
-// ─── Save ─────────────────────────────────────────────────────────────────────
+// Save 
 
 void ConfigManager::save(const std::string& path) const {
     std::shared_lock lock{mutex_};
@@ -90,14 +90,14 @@ void ConfigManager::save(const std::string& path) const {
     f << j.dump(4) << "\n";
 }
 
-// ─── Accessors ────────────────────────────────────────────────────────────────
+// Accessors 
 
 Config ConfigManager::get() const {
     std::shared_lock lock{mutex_};
     return config_;
 }
 
-// ─── Live update setters ──────────────────────────────────────────────────────
+// Live update setters 
 
 void ConfigManager::set_rate(double rate_bps) {
     if (rate_bps <= 0.0)
@@ -125,7 +125,7 @@ void ConfigManager::set_mode(TrafficMode mode) {
     config_.mode = mode;
 }
 
-// ─── Mode string conversion ───────────────────────────────────────────────────
+//  Mode string conversion 
 
 TrafficMode ConfigManager::parse_mode(const std::string& s) {
     if (s == "shaping")  return TrafficMode::SHAPING;
