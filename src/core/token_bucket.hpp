@@ -2,7 +2,7 @@
 //
 // NetBucket — Token Bucket Algorithm
 //
-// ─── What is a Token Bucket? ──────────────────────────────────────────────────
+// What is a Token Bucket? 
 //
 // A Token Bucket is a rate-limiting algorithm. Imagine a physical bucket
 // that continuously fills with tokens at a fixed rate. Each packet that
@@ -16,7 +16,7 @@
 //   - If not enough tokens exist       → packet is QUEUED (shaping)
 //                                     → packet is DROPPED (policing)
 //
-// ─── Internal Units ───────────────────────────────────────────────────────────
+// Internal Units 
 //
 // All token quantities are stored as `double` representing **bytes**.
 //
@@ -32,7 +32,7 @@
 //   Possible but requires careful fixed-point math everywhere.
 //   double is simpler to audit, unit-test, and explain.
 //
-// ─── Clock Choice ─────────────────────────────────────────────────────────────
+// Clock Choice 
 //
 // std::chrono::steady_clock is used for ALL timing.
 //
@@ -45,7 +45,7 @@
 //   steady_clock is guaranteed monotonically non-decreasing. It never jumps
 //   backward. This makes token refill calculations always correct.
 //
-// ─── Thread Safety ────────────────────────────────────────────────────────────
+// Thread Safety 
 //
 // TokenBucket is protected by a single std::mutex.
 // All public methods lock this mutex.
@@ -64,18 +64,18 @@
 
 namespace netbucket {
 
-// ─── TokenBucketConfig ────────────────────────────────────────────────────────
+// TokenBucketConfig 
 
 struct TokenBucketConfig {
     double rate_bps       = 10'000'000.0;   ///< Rate in bits per second
     double capacity_bytes = 20'971'520.0;   ///< Bucket capacity in bytes (20 MB)
 };
 
-// ─── TokenBucket ──────────────────────────────────────────────────────────────
+// TokenBucket 
 
 class TokenBucket {
 public:
-    // ── Construction ──────────────────────────────────────────────────────────
+    //  Construction 
 
     /// Construct with explicit rate (bits/sec) and capacity (bytes).
     ///
@@ -95,7 +95,7 @@ public:
 
     ~TokenBucket() = default;
 
-    // ── Core operation ────────────────────────────────────────────────────────
+    // Core operation 
 
     /// Try to consume `bytes` tokens.
     ///
@@ -110,7 +110,7 @@ public:
     /// Primarily for status reporting and unit tests.
     [[nodiscard]] double tokens() const;
 
-    // ── Configuration (thread-safe, live update) ──────────────────────────────
+    //  Configuration (thread-safe, live update) 
 
     /// Change the token refill rate at runtime.
     ///
@@ -129,7 +129,7 @@ public:
     /// @throws std::invalid_argument if capacity_bytes <= 0
     void set_capacity(double capacity_bytes);
 
-    // ── Inspection (thread-safe) ───────────────────────────────────────────────
+    // Inspection (thread-safe) 
 
     [[nodiscard]] double rate_bps()        const;
     [[nodiscard]] double rate_bytes_sec()  const;   ///< rate_bps / 8
@@ -139,7 +139,7 @@ public:
     [[nodiscard]] std::string status() const;
 
 private:
-    // ── Internal helpers (must be called with mutex_ held) ────────────────────
+    // Internal helpers (must be called with mutex_ held) 
 
     /// Recompute token count based on elapsed time since last_update_.
     /// This is the "lazy refill" — happens only when a packet arrives,
@@ -152,7 +152,7 @@ private:
     ///   last_update_ = now
     void refill_locked();
 
-    // ── Data members ──────────────────────────────────────────────────────────
+    // Data members 
 
     mutable std::mutex mutex_;
 
