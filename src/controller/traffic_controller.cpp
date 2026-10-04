@@ -7,7 +7,7 @@
 
 namespace netbucket {
 
-// ─── Construction ─────────────────────────────────────────────────────────────
+// Construction 
 
 TrafficController::TrafficController(const Config& cfg, ForwardFn forward)
     : forward_fn_{std::move(forward)}
@@ -24,7 +24,7 @@ TrafficController::~TrafficController() {
     stop();
 }
 
-// ─── Lifecycle ────────────────────────────────────────────────────────────────
+// Lifecycle 
 
 void TrafficController::start() {
     if (running_.exchange(true)) return;   // Already started
@@ -40,7 +40,7 @@ void TrafficController::stop() {
     NB_LOG_INFO("TrafficController", "Stopped");
 }
 
-// ─── Core operation ───────────────────────────────────────────────────────────
+// Core operation 
 
 void TrafficController::process(Packet packet) {
     stats_.record_received(packet.size_bytes);
@@ -74,7 +74,7 @@ void TrafficController::process(Packet packet) {
     }
 }
 
-// ─── Scheduler thread ─────────────────────────────────────────────────────────
+// Scheduler thread 
 //
 // This thread continuously tries to drain the queue.
 //
@@ -150,7 +150,7 @@ void TrafficController::scheduler_loop() {
     NB_LOG_DEBUG("TrafficController", "Scheduler thread exiting");
 }
 
-// ─── Configuration ────────────────────────────────────────────────────────────
+// Configuration 
 
 void TrafficController::apply_config(const Config& cfg) {
     bucket_.set_rate(cfg.rate_bps);
@@ -163,7 +163,7 @@ void TrafficController::apply_config(const Config& cfg) {
         " Mbps, mode=" + ConfigManager::mode_to_string(cfg.mode));
 }
 
-// ─── Inspection ───────────────────────────────────────────────────────────────
+// Inspection 
 
 TrafficMode TrafficController::mode() const {
     return mode_.load(std::memory_order_relaxed);
