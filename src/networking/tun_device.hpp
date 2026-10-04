@@ -2,7 +2,7 @@
 //
 // NetBucket — TUN Virtual Network Interface
 //
-// ─── What is TUN? ─────────────────────────────────────────────────────────────
+// What is TUN? 
 //
 // TUN (network TUNnel) is a Linux kernel virtual network device.
 // Unlike a physical NIC (which sends frames over a wire), a TUN device
@@ -16,7 +16,7 @@
 // Similarly, when user-space write()s raw IP packet bytes to the fd,
 // the kernel receives them as if they came from the network.
 //
-// ─── TUN vs TAP ──────────────────────────────────────────────────────────────
+//  TUN vs TAP 
 //
 // TUN:  operates at Layer 3 (IP packets — no Ethernet header)
 // TAP:  operates at Layer 2 (Ethernet frames — includes MAC header)
@@ -27,7 +27,7 @@
 //   - iperf3, ping, and other tools produce IP traffic
 //   - TUN is the standard choice for VPNs, tunnels, and traffic shapers
 //
-// ─── How it works ─────────────────────────────────────────────────────────────
+// How it works 
 //
 //   1. open("/dev/net/tun") → returns a file descriptor
 //   2. ioctl(fd, TUNSETIFF, &ifr) → creates interface "tun0" in TUN mode
@@ -35,7 +35,7 @@
 //   4. Now: read(fd, buf, len) → receives one IP packet from the network
 //            write(fd, buf, len) → injects one IP packet into the kernel
 //
-// ─── Permissions ─────────────────────────────────────────────────────────────
+// Permissions 
 //
 // Opening /dev/net/tun requires CAP_NET_ADMIN (or running as root).
 // The process must be run with sudo or granted the capability.
@@ -62,7 +62,7 @@ public:
     TunDevice(TunDevice&&) noexcept;
     TunDevice& operator=(TunDevice&&) noexcept;
 
-    // ── Lifecycle ────────────────────────────────────────────────────────────
+    //  Lifecycle 
 
     /// Open /dev/net/tun and create the interface.
     /// @throws std::runtime_error on failure
@@ -73,7 +73,7 @@ public:
 
     [[nodiscard]] bool is_open() const { return fd_ >= 0; }
 
-    // ── I/O ──────────────────────────────────────────────────────────────────
+    //  I/O 
 
     /// Read one IP packet from the TUN device.
     ///
@@ -93,7 +93,7 @@ public:
     bool write_packet(const std::vector<uint8_t>& data);
     bool write_packet(const uint8_t* data, std::size_t len);
 
-    // ── Accessors ────────────────────────────────────────────────────────────
+    //  Accessors 
 
     [[nodiscard]] const std::string& name() const { return name_; }
     [[nodiscard]] int                fd()   const { return fd_;   }
