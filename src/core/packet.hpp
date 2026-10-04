@@ -2,7 +2,7 @@
 //
 // NetBucket — Packet Abstraction
 //
-// ─── What is this? ────────────────────────────────────────────────────────────
+// What is this?
 //
 // A Packet is the fundamental unit of work in NetBucket.
 //
@@ -14,13 +14,13 @@
 // Statistics) operates on Packet objects — they never care whether the
 // bytes came from real traffic or a synthetic test.
 //
-// ─── Design decision: struct not class ────────────────────────────────────────
+// Design decision: struct not class 
 //
 // Packet is a plain data aggregate. It has no invariants to enforce, no
 // private state, and no behavior. Using a struct with public members is
 // appropriate here and avoids unnecessary accessor boilerplate.
 //
-// ─── Fields ───────────────────────────────────────────────────────────────────
+//  Fields 
 //
 // Keep fields minimal. Do not add a field unless something actually uses it.
 //
@@ -51,20 +51,20 @@ using FlowId = uint32_t;
 constexpr FlowId DEFAULT_FLOW_ID = 0;
 
 struct Packet {
-    // ── Identity ──────────────────────────────────────────────────────────────
+    // Identity 
     uint64_t    id          = 0;              ///< Unique packet ID (monotonic)
     std::size_t size_bytes  = 0;              ///< Payload size in bytes (token cost)
 
-    // ── Payload ───────────────────────────────────────────────────────────────
+    // Payload 
     // Raw bytes from TUN device. Empty vector = synthetic/simulation packet.
     // When real TUN integration is active, data.size() == size_bytes.
     std::vector<uint8_t> data;
 
-    // ── Timestamps (steady_clock) ─────────────────────────────────────────────
+    // Timestamps (steady_clock) 
     TimePoint arrived_at;    ///< When the packet entered the traffic engine
     TimePoint enqueued_at;   ///< When the packet was placed in the queue (if queued)
 
-    // ── Classification ────────────────────────────────────────────────────────
+    //  Classification 
     FlowId    flow_id  = DEFAULT_FLOW_ID;  ///< Assigned by TrafficClassifier
     uint32_t  src_ip   = 0;               ///< Source IPv4 address (network byte order)
     uint32_t  dst_ip   = 0;               ///< Destination IPv4 address
@@ -72,7 +72,7 @@ struct Packet {
     uint16_t  dst_port = 0;               ///< Destination port (TCP/UDP)
     uint8_t   protocol = 0;               ///< IP protocol (6=TCP, 17=UDP, 1=ICMP)
 
-    // ── Factory ───────────────────────────────────────────────────────────────
+    // Factory 
 
     /// Create a synthetic packet for unit testing.
     /// Automatically assigns a monotonically increasing ID.
@@ -83,7 +83,7 @@ struct Packet {
     /// Parses IP header to extract src/dst addresses and ports.
     static Packet from_bytes(std::vector<uint8_t> data);
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    // Helpers 
 
     /// How long did this packet wait in the queue?
     /// Returns zero duration if packet was never enqueued.
