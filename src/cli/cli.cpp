@@ -17,7 +17,7 @@ CLI::CLI(ConfigManager& config_mgr, TrafficController* controller)
     : config_mgr_{config_mgr}, controller_{controller}
 {}
 
-// ─── Entry points ─────────────────────────────────────────────────────────────
+// Entry points 
 
 int CLI::run(int argc, char* argv[]) {
     std::vector<std::string> args;
@@ -65,7 +65,7 @@ int CLI::run(const std::vector<std::string>& args) {
     }
 }
 
-// ─── Commands ─────────────────────────────────────────────────────────────────
+// Commands 
 
 int CLI::cmd_start(const std::vector<std::string>& args) {
     // Parse optional --config FILE
@@ -165,7 +165,7 @@ int CLI::cmd_help() {
     return 0;
 }
 
-// ─── Status display ───────────────────────────────────────────────────────────
+// Status display 
 
 void CLI::print_status() const {
     const Config cfg = config_mgr_.get();
@@ -186,7 +186,7 @@ void CLI::print_status() const {
     std::cout << "\n";
 }
 
-// ─── Parse helpers ────────────────────────────────────────────────────────────
+//  Parse helpers 
 
 double CLI::parse_rate(const std::string& s) {
     // Convert to lowercase for case-insensitive matching
