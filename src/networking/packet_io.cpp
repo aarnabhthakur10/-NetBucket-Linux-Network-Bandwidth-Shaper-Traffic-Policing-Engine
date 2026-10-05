@@ -1,10 +1,7 @@
-// src/networking/packet_io.cpp
 #include "networking/packet_io.hpp"
 #include "logger/logger.hpp"
 
 namespace netbucket {
-
-// PacketReader 
 
 PacketReader::PacketReader(TunDevice& tun, TrafficController& controller)
     : tun_{tun}, controller_{controller}
@@ -33,15 +30,13 @@ void PacketReader::read_loop() {
             if (!running_.load()) break;
             continue;
         }
-        
+
         Packet pkt = Packet::from_bytes(std::move(raw));
         controller_.process(std::move(pkt));
     }
 
     NB_LOG_INFO("PacketReader", "Read loop stopped");
 }
-
-// PacketWriter 
 
 PacketWriter::PacketWriter(TunDevice& tun_out)
     : tun_out_{tun_out}
@@ -57,4 +52,4 @@ ForwardFn PacketWriter::as_forward_fn() {
     return [this](Packet p) { write(std::move(p)); };
 }
 
-} 
+}

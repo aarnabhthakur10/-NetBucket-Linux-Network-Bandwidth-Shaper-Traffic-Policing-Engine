@@ -1,4 +1,3 @@
-// src/statistics/statistics.cpp
 #include "statistics/statistics.hpp"
 
 #include <algorithm>
@@ -7,8 +6,6 @@
 #include <sstream>
 
 namespace netbucket {
-
-// ─── Record operations ────────────────────────────────────────────────────────
 
 void StatisticsEngine::record_received(std::size_t bytes) {
     pkt_received_.fetch_add(1, std::memory_order_relaxed);
@@ -61,11 +58,7 @@ void StatisticsEngine::update_token_level(
     [[maybe_unused]] double tokens_bytes,
     [[maybe_unused]] double capacity_bytes)
 {
-    // Token level is read directly from the TokenBucket in format_status().
-    // This hook is available for future per-class token metrics.
 }
-
-// ─── Throughput snapshot ──────────────────────────────────────────────────────
 
 StatisticsEngine::ThroughputSnapshot StatisticsEngine::snapshot_throughput() {
     using Clock = std::chrono::steady_clock;
@@ -91,8 +84,6 @@ StatisticsEngine::ThroughputSnapshot StatisticsEngine::snapshot_throughput() {
     return snap;
 }
 
-// ─── Reset ────────────────────────────────────────────────────────────────────
-
 void StatisticsEngine::reset() {
     pkt_received_  .store(0); pkt_forwarded_ .store(0);
     pkt_dropped_   .store(0); pkt_queued_    .store(0);
@@ -108,8 +99,6 @@ void StatisticsEngine::reset() {
     snap_bytes_dropped_   = 0;
     snap_time_            = std::chrono::steady_clock::now();
 }
-
-// ─── Format status ────────────────────────────────────────────────────────────
 
 std::string StatisticsEngine::format_status(
     double rate_bps,
@@ -142,4 +131,4 @@ std::string StatisticsEngine::format_status(
     return o.str();
 }
 
-} // namespace netbucket
+}

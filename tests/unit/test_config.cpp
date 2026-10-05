@@ -1,7 +1,3 @@
-// tests/unit/test_config.cpp
-//
-// NetBucket — ConfigManager Unit Tests
-
 #include "config/config.hpp"
 
 #include <gtest/gtest.h>
@@ -10,15 +6,12 @@
 
 using namespace netbucket;
 
-// Helper: write a JSON config file to a temp path
 static std::string write_temp_config(const std::string& content) {
     const std::string path = "/tmp/netbucket_test_config.json";
     std::ofstream f(path);
     f << content;
     return path;
 }
-
-// ─── Test 1: Default config values ───────────────────────────────────────────
 
 TEST(ConfigManager, DefaultValues) {
     ConfigManager cm;
@@ -27,8 +20,6 @@ TEST(ConfigManager, DefaultValues) {
     EXPECT_GT(cfg.bucket_capacity_bytes, 0.0);
     EXPECT_GT(cfg.queue_capacity_packets, 0u);
 }
-
-// ─── Test 2: Load valid JSON ───────────────────────────────────────────────────
 
 TEST(ConfigManager, LoadValidJson) {
     const auto path = write_temp_config(R"({
@@ -48,15 +39,11 @@ TEST(ConfigManager, LoadValidJson) {
     EXPECT_EQ(cfg.mode, TrafficMode::POLICING);
 }
 
-// ─── Test 3: Reject zero rate ─────────────────────────────────────────────────
-
 TEST(ConfigManager, RejectZeroRate) {
     const auto path = write_temp_config(R"({"rate_bps": 0})");
     ConfigManager cm;
     EXPECT_THROW(cm.load(path), std::exception);
 }
-
-// ─── Test 4: Reject very small capacity ──────────────────────────────────────
 
 TEST(ConfigManager, RejectTooSmallCapacity) {
     const auto path = write_temp_config(
@@ -64,8 +51,6 @@ TEST(ConfigManager, RejectTooSmallCapacity) {
     ConfigManager cm;
     EXPECT_THROW(cm.load(path), std::exception);
 }
-
-// ─── Test 5: set_rate validates ───────────────────────────────────────────────
 
 TEST(ConfigManager, SetRateValidation) {
     ConfigManager cm;
@@ -75,8 +60,6 @@ TEST(ConfigManager, SetRateValidation) {
     EXPECT_DOUBLE_EQ(cm.get().rate_bps, 1'000'000.0);
 }
 
-// ─── Test 6: parse_mode / mode_to_string round-trip ──────────────────────────
-
 TEST(ConfigManager, ModeRoundTrip) {
     EXPECT_EQ(ConfigManager::parse_mode("shaping"),  TrafficMode::SHAPING);
     EXPECT_EQ(ConfigManager::parse_mode("policing"), TrafficMode::POLICING);
@@ -84,8 +67,6 @@ TEST(ConfigManager, ModeRoundTrip) {
     EXPECT_EQ(ConfigManager::mode_to_string(TrafficMode::POLICING), "policing");
     EXPECT_THROW(ConfigManager::parse_mode("invalid"), std::invalid_argument);
 }
-
-// ─── Test 7: CLI rate parser ──────────────────────────────────────────────────
 
 #include "cli/cli.hpp"
 
@@ -97,8 +78,6 @@ TEST(CLI, ParseRate) {
     EXPECT_THROW(CLI::parse_rate("0Mbps"), std::exception);
     EXPECT_THROW(CLI::parse_rate("notanumber"), std::exception);
 }
-
-// ─── Test 8: CLI bytes parser ─────────────────────────────────────────────────
 
 TEST(CLI, ParseBytes) {
     EXPECT_DOUBLE_EQ(CLI::parse_bytes("20MB"), 20.0 * 1048576.0);

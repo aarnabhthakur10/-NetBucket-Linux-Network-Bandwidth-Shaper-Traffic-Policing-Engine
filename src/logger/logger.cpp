@@ -1,4 +1,3 @@
-// src/logger/logger.cpp
 #include "logger/logger.hpp"
 
 #include <chrono>
@@ -27,14 +26,13 @@ void Logger::set_output(std::ostream& out) {
 void Logger::log(LogLevel level, std::string_view component, std::string_view message) {
     if (level < min_level_) return;
 
-    // Build timestamp: HH:MM:SS.mmm
     const auto now = std::chrono::system_clock::now();
     const auto now_t = std::chrono::system_clock::to_time_t(now);
     const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
         now.time_since_epoch()) % 1000;
 
     std::tm tm_buf{};
-    localtime_r(&now_t, &tm_buf);   // thread-safe on Linux
+    localtime_r(&now_t, &tm_buf);
 
     const char* level_str = "INFO ";
     switch (level) {
@@ -61,4 +59,4 @@ void Logger::log(LogLevel level, std::string_view component, std::string_view me
     stream.flush();
 }
 
-} // namespace netbucket
+}

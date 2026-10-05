@@ -1,16 +1,5 @@
 #!/usr/bin/env bash
-# scripts/benchmark.sh
-#
-# NetBucket — Performance Benchmark Script
-#
-# Runs a sequence of iperf3 tests at different configurations and
-# records results to docs/benchmarks/results.md
-#
-# USAGE:
-#   sudo ./scripts/benchmark.sh
-#
-# PREREQUISITE:
-#   sudo ./scripts/setup_network.sh
+
 
 set -euo pipefail
 
@@ -36,13 +25,11 @@ run_test() {
     echo "\`\`\`" >> "$OUTPUT"
     echo "Rate: ${rate_mbps} Mbps | Burst: ${burst_mb} MB | Mode: ${mode}" >> "$OUTPUT"
 
-    # Configure shaper
     ./build/netbucket config \
         --rate "${rate_mbps}Mbps" \
         --burst "${burst_mb}MB" \
         --mode "$mode" 2>/dev/null || true
 
-    # Run test
     ip netns exec "$NS_CLIENT" iperf3 \
         --client "$IP_SERVER" \
         --port "$PORT" \
@@ -55,7 +42,6 @@ run_test() {
     echo "" >> "$OUTPUT"
 }
 
-# Start server
 ip netns exec "$NS_SERVER" iperf3 --server --port "$PORT" --daemon \
     --logfile /tmp/nb_bench_server.log
 

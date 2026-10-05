@@ -1,12 +1,9 @@
-// src/classifier/classifier.cpp
 #include "classifier/classifier.hpp"
 
 #include <algorithm>
 #include <stdexcept>
 
 namespace netbucket {
-
-// Rule factories 
 
 ClassificationRule ClassificationRule::by_dst_port(
     std::string name, uint16_t port, FlowId flow_id, int priority)
@@ -32,11 +29,8 @@ ClassificationRule ClassificationRule::by_protocol(
     return r;
 }
 
-// Rule management
-
 void TrafficClassifier::add_rule(ClassificationRule rule) {
     rules_.push_back(std::move(rule));
-    // Keep sorted by priority (ascending — lowest priority value evaluated first)
     std::sort(rules_.begin(), rules_.end(),
         [](const ClassificationRule& a, const ClassificationRule& b) {
             return a.priority < b.priority;
@@ -50,8 +44,6 @@ void TrafficClassifier::remove_rule(const std::string& name) {
         rules_.end()
     );
 }
-
-// Classification 
 
 bool TrafficClassifier::matches(const ClassificationRule& rule, const Packet& pkt) const {
     switch (rule.field) {
@@ -71,7 +63,6 @@ void TrafficClassifier::classify(Packet& packet) const {
             return;
         }
     }
-    // No match — leave as DEFAULT_FLOW_ID (0)
 }
 
 std::string TrafficClassifier::flow_name(FlowId id) const {
@@ -82,4 +73,4 @@ std::string TrafficClassifier::flow_name(FlowId id) const {
     return "flow-" + std::to_string(id);
 }
 
-} // namespace netbucket
+}

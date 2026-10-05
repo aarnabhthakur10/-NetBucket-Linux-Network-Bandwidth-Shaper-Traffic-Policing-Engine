@@ -1,27 +1,14 @@
 #!/usr/bin/env bash
-# scripts/cleanup_network.sh
-#
-# NetBucket — Virtual Network Cleanup Script
-#
-# Removes everything created by setup_network.sh:
-#   - network namespaces: netbucket-client, netbucket-server
-#   - veth interfaces (automatically removed with namespaces)
-#
-# USAGE:
-#   sudo ./scripts/cleanup_network.sh
-#
-# It is safe to run this even if setup partially failed.
-# Each step is attempted independently.
 
-set -uo pipefail   # Note: no -e, so we continue even if one step fails
+
+set -uo pipefail
 
 NS_CLIENT="netbucket-client"
 NS_SERVER="netbucket-server"
 
 echo "[netbucket] Cleaning up virtual network..."
 
-# Remove namespaces 
-# Deleting a namespace automatically removes all veth interfaces inside it.
+
 
 if ip netns list | grep -q "$NS_CLIENT"; then
     echo "[netbucket] Removing namespace: $NS_CLIENT"

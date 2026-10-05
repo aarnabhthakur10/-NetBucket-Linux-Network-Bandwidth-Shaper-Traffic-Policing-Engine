@@ -1,14 +1,3 @@
-// src/networking/tun_device.cpp
-//
-// This file uses Linux-specific APIs:
-//   - /dev/net/tun
-//   - TUNSETIFF ioctl
-//   - IFF_TUN / IFF_NO_PI flags
-//   - fcntl for non-blocking mode
-//   - ip link/addr commands via system()
-//
-// It will only compile on Linux.
-
 #include "networking/tun_device.hpp"
 #include "logger/logger.hpp"
 
@@ -26,8 +15,6 @@
 #include <stdexcept>
 
 namespace netbucket {
-
-//  Construction 
 
 TunDevice::TunDevice(const std::string& name)
     : name_{name}, fd_{-1}
@@ -53,10 +40,7 @@ TunDevice& TunDevice::operator=(TunDevice&& other) noexcept {
     return *this;
 }
 
-//  Open 
-
 void TunDevice::open() {
-    // Step 1: Open the TUN/TAP clone device
     fd_ = ::open("/dev/net/tun", O_RDWR | O_CLOEXEC);
     if (fd_ < 0) {
         throw std::runtime_error(
@@ -65,15 +49,6 @@ void TunDevice::open() {
         );
     }
 
-    // Step 2: Configure the interface using TUNSETIFF ioctl
-    //
-    // ifreq is the standard Linux structure for interface requests.
-    // ifr_name:  the name of the interface to create (e.g. "netbucket0")
-    // ifr_flags: IFF_TUN  = TUN mode (IP packets, no Ethernet header)
-    //            IFF_NO_PI = do not prepend a 4-byte "packet info" header
-    //                        to each packet. Without IFF_NO_PI, each read()
-    //                        would return [flags 2B][proto 2B][IP packet].
-    //                        With IFF_NO_PI, read() returns raw IP bytes only.
     struct ifreq ifr{};
     std::strncpy(ifr.ifr_name, name_.c_str(), IFNAMSIZ - 1);
     ifr.ifr_flags = IFF_TUN | IFF_NO_PI;
@@ -88,13 +63,10 @@ void TunDevice::open() {
         );
     }
 
-    // The kernel may assign a different name (e.g. if "netbucket0" was taken)
     name_ = ifr.ifr_name;
 
     NB_LOG_INFO("TunDevice", "Created TUN interface: " + name_);
 }
-
-//  Close 
 
 void TunDevice::close() {
     if (fd_ >= 0) {
@@ -103,8 +75,6 @@ void TunDevice::close() {
         NB_LOG_INFO("TunDevice", "Closed TUN interface: " + name_);
     }
 }
-
-// Read 
 
 std::vector<uint8_t> TunDevice::read_packet(std::size_t max_bytes) {
     std::vector<uint8_t> buf(max_bytes);
@@ -121,8 +91,6 @@ std::vector<uint8_t> TunDevice::read_packet(std::size_t max_bytes) {
     return buf;
 }
 
-//  Write 
-
 bool TunDevice::write_packet(const std::vector<uint8_t>& data) {
     return write_packet(data.data(), data.size());
 }
@@ -136,11 +104,9 @@ bool TunDevice::write_packet(const uint8_t* data, std::size_t len) {
     return static_cast<std::size_t>(n) == len;
 }
 
-} // namespace netbucket
+}
 
 #else
-//  Non-Linux stub 
-// TUN/TAP is Linux-specific. On other platforms, all methods throw.
 
 #include <stdexcept>
 
@@ -159,5 +125,5 @@ std::vector<uint8_t> TunDevice::read_packet(std::size_t) { return {}; }
 bool TunDevice::write_packet(const std::vector<uint8_t>&) { return false; }
 bool TunDevice::write_packet(const uint8_t*, std::size_t) { return false; }
 
-} // namespace netbucket
+}
 #endif

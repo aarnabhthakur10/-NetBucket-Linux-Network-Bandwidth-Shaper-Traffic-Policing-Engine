@@ -1,10 +1,3 @@
-// tests/unit/test_traffic_controller.cpp
-//
-// NetBucket — TrafficController Unit Tests
-//
-// These tests use a synthetic ForwardFn (no TUN device required).
-// We count forwarded packets and verify shaping vs policing behavior.
-
 #include "config/config.hpp"
 #include "controller/traffic_controller.hpp"
 #include "core/packet.hpp"
@@ -16,8 +9,6 @@
 #include <thread>
 
 using namespace netbucket;
-
-// ─── Test fixture ─────────────────────────────────────────────────────────────
 
 class TrafficControllerTest : public ::testing::Test {
 protected:
@@ -39,8 +30,6 @@ protected:
     }
 };
 
-// ─── Test 1: Packet within budget is forwarded ────────────────────────────────
-
 TEST_F(TrafficControllerTest, AllowedPacketIsForwarded) {
     auto cfg = make_config(TrafficMode::SHAPING);
     TrafficController ctrl{cfg, make_forward()};
@@ -54,21 +43,16 @@ TEST_F(TrafficControllerTest, AllowedPacketIsForwarded) {
     ctrl.stop();
 }
 
-// ─── Test 2: Shaping mode queues excess, does NOT drop ────────────────────────
-
 TEST_F(TrafficControllerTest, ShapingQueuesExcess) {
-    // 1-byte capacity bucket — every packet beyond 1 byte will be queued
     auto cfg = make_config(TrafficMode::SHAPING, 1'000'000.0, 1.0, 100);
     TrafficController ctrl{cfg, make_forward()};
     ctrl.start();
 
-    // Send 10 large packets
     for (int i = 0; i < 10; ++i) {
         ctrl.process(Packet::make_synthetic(1500));
     }
 
     const auto& s = ctrl.stats();
-    // dropped should be 0 in shaping mode (packets queued, not dropped)
     EXPECT_EQ(s.packets_dropped(), 0u)
         << "Shaping mode must NOT drop packets — they go into the queue";
     EXPECT_GT(s.packets_queued(), 0u)
@@ -76,10 +60,7 @@ TEST_F(TrafficControllerTest, ShapingQueuesExcess) {
     ctrl.stop();
 }
 
-// ─── Test 3: Policing mode drops excess immediately ───────────────────────────
-
 TEST_F(TrafficControllerTest, PolicingDropsExcess) {
-    // 1-byte bucket, policing mode
     auto cfg = make_config(TrafficMode::POLICING, 1'000'000.0, 1.0);
     TrafficController ctrl{cfg, make_forward()};
     ctrl.start();
@@ -96,8 +77,6 @@ TEST_F(TrafficControllerTest, PolicingDropsExcess) {
     ctrl.stop();
 }
 
-// ─── Test 4: Mode switch from shaping to policing ─────────────────────────────
-
 TEST_F(TrafficControllerTest, ModeSwitchIsLive) {
     auto cfg = make_config(TrafficMode::SHAPING, 1'000'000.0, 100.0, 1000);
     TrafficController ctrl{cfg, make_forward()};
@@ -112,10 +91,8 @@ TEST_F(TrafficControllerTest, ModeSwitchIsLive) {
     ctrl.stop();
 }
 
-// ─── Test 5: Statistics are updated ──────────────────────────────────────────
-
 TEST_F(TrafficControllerTest, StatisticsUpdated) {
-    auto cfg = make_config(TrafficMode::SHAPING);   // big bucket → all forwarded
+    auto cfg = make_config(TrafficMode::SHAPING);
     TrafficController ctrl{cfg, make_forward()};
     ctrl.start();
 
@@ -128,8 +105,6 @@ TEST_F(TrafficControllerTest, StatisticsUpdated) {
     EXPECT_EQ(s.packets_received(), 5u);
     ctrl.stop();
 }
-
-// ─── Test 6: apply_config changes rate live ────────────────────────────────────
 
 TEST_F(TrafficControllerTest, ApplyConfigChangesRate) {
     auto cfg = make_config(TrafficMode::SHAPING, 10'000'000.0, 20'000'000.0);
@@ -145,8 +120,6 @@ TEST_F(TrafficControllerTest, ApplyConfigChangesRate) {
     ctrl.stop();
 }
 
-// ─── Test 7: Graceful shutdown drains cleanly ─────────────────────────────────
-
 TEST_F(TrafficControllerTest, GracefulShutdown) {
     auto cfg = make_config(TrafficMode::SHAPING);
     TrafficController ctrl{cfg, make_forward()};
@@ -154,6 +127,5 @@ TEST_F(TrafficControllerTest, GracefulShutdown) {
 
     ctrl.process(Packet::make_synthetic(100));
 
-    // stop() must not deadlock or crash
     EXPECT_NO_THROW(ctrl.stop());
 }

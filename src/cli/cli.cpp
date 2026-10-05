@@ -1,4 +1,3 @@
-// src/cli/cli.cpp
 #include "cli/cli.hpp"
 #include "controller/traffic_controller.hpp"
 #include "logger/logger.hpp"
@@ -16,8 +15,6 @@ namespace netbucket {
 CLI::CLI(ConfigManager& config_mgr, TrafficController* controller)
     : config_mgr_{config_mgr}, controller_{controller}
 {}
-
-// Entry points 
 
 int CLI::run(int argc, char* argv[]) {
     std::vector<std::string> args;
@@ -44,7 +41,6 @@ int CLI::run(const std::vector<std::string>& args) {
         if (cmd == "set-mode"  && args.size() >= 2)  return cmd_set_mode(args[1]);
         if (cmd == "set-queue" && args.size() >= 2)  return cmd_set_queue(args[1]);
 
-        // config shorthand: netbucket config --rate 10Mbps --burst 20MB --mode shaping
         if (cmd == "config") {
             for (std::size_t i = 1; i + 1 < args.size(); i += 2) {
                 if (args[i] == "--rate")   cmd_set_rate(args[i+1]);
@@ -65,10 +61,7 @@ int CLI::run(const std::vector<std::string>& args) {
     }
 }
 
-// Commands 
-
 int CLI::cmd_start(const std::vector<std::string>& args) {
-    // Parse optional --config FILE
     for (std::size_t i = 1; i + 1 < args.size(); ++i) {
         if (args[i] == "--config") {
             config_mgr_.load(args[i+1]);
@@ -105,7 +98,6 @@ int CLI::cmd_stats() {
 }
 
 int CLI::cmd_reset() {
-    // stats reset is on StatisticsEngine — forward to controller
     std::cout << "[netbucket] Statistics reset\n";
     return 0;
 }
@@ -165,14 +157,12 @@ int CLI::cmd_help() {
     return 0;
 }
 
-// Status display 
-
 void CLI::print_status() const {
     const Config cfg = config_mgr_.get();
     const std::string mode_str = ConfigManager::mode_to_string(cfg.mode);
 
     const double tokens = controller_ ? controller_->token_level() : cfg.bucket_capacity_bytes;
-    const std::size_t qd = 0;   // Would come from controller in a running system
+    const std::size_t qd = 0;
 
     std::cout << std::fixed << std::setprecision(2);
     std::cout << "\nNetBucket Traffic Controller\n";
@@ -186,10 +176,7 @@ void CLI::print_status() const {
     std::cout << "\n";
 }
 
-//  Parse helpers 
-
 double CLI::parse_rate(const std::string& s) {
-    // Convert to lowercase for case-insensitive matching
     std::string lower = s;
     std::transform(lower.begin(), lower.end(), lower.begin(),
                    [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
@@ -240,4 +227,4 @@ double CLI::parse_bytes(const std::string& s) {
     }
 }
 
-} // namespace netbucket
+}
