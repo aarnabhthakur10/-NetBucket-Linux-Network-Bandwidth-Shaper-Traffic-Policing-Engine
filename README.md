@@ -47,7 +47,7 @@ cmake --build build --parallel
 ### Run (Phase 0 — banner only)
 
 ```bash
-./build/netbucket
+./build/src/netbucket
 ```
 
 ### Test
