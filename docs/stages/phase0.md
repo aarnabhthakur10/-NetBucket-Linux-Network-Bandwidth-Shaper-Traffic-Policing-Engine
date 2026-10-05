@@ -1,7 +1,5 @@
 # Phase 0 — Repository Scaffold
 
-**Date completed:** _fill in when you run this phase_
-
 ---
 
 ## What was built
