@@ -170,7 +170,7 @@ sudo apt install -y build-essential cmake git iperf3 iproute2 tcpdump libgtest-d
 ## 2. Clone
 
 ``` bash
-git clone https://github.com/aarnabhthakur10/Wipro-Capstone-Project-SOA.git
+git clone https://github.com/aarnabhthakur10/-NetBucket-Linux-Network-Bandwidth-Shaper-Traffic-Policing-Engine
 cd Wipro-Capstone-Project-SOA
 ```
 
